@@ -1,6 +1,7 @@
 package me.hazedev.shooter;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 
@@ -8,20 +9,26 @@ public interface AssetProvider {
 
     Texture getBackgroundTile();
 
-    Texture getShooter();
+    Texture getArrow();
 
-    Texture getEnemy();
+    Texture getOctagon();
 
     Texture getBullet();
 
     ParticleEffect getEnemyBlast();
 
-    ParticleEffect getBlueBlast();
-
     ParticleEffect getShooterBlast();
 
     Music getMusic();
 
-    Texture getBlankTexture();
+    Sound getFire();
+
+    Sound getHit();
+
+    Sound getGameOver();
+
+    Texture getHealthUpgrade();
+
+    Texture getRegenerationUpgrade();
 
 }
