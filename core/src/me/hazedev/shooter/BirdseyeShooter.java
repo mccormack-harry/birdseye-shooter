@@ -34,8 +34,6 @@ public class BirdseyeShooter implements ApplicationListener {
 		assets = new Assets();
 		assets.loadAll();
 
-		assets.getMusic().play();
-
 		world = new World(assets, 512 + 128);
 	}
 

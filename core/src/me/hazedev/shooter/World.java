@@ -50,6 +50,10 @@ public class World extends PooledEngine implements Disposable {
         addSystem(new BackgroundSystem(this));
         addSystem(new HealthSystem());
         addSystem(new RenderingSystem(camera));
+
+        Music music = assets.getMusic();
+        music.setLooping(true);
+        music.play();
     }
 
     @Override
