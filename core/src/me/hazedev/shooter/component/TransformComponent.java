@@ -5,6 +5,12 @@ import com.badlogic.gdx.math.Vector2;
 
 public class TransformComponent implements Component {
 
+    public Vector2 position = new Vector2();
+    public Vector2 scale = new Vector2(1, 1);
+    public float rotation = 0;
+
+    public TransformComponent() {}
+
     public TransformComponent(Vector2 position) {
         this.position = position;
     }
@@ -13,28 +19,15 @@ public class TransformComponent implements Component {
         this.position = position;
         this.rotation = rotation;
     }
-
-    public TransformComponent(Vector2 position, Vector2 origin) {
+    public TransformComponent(Vector2 position, Vector2 scale) {
         this.position = position;
-//        this.origin = origin;
+        this.scale = scale;
     }
 
-    public TransformComponent(Vector2 position, Vector2 origin, float rotation) {
+    public TransformComponent(Vector2 position, Vector2 scale, float rotation) {
         this.position = position;
-//        this.origin = origin;
-        this.rotation = rotation;
-    }
-
-    public TransformComponent(Vector2 position, Vector2 origin, Vector2 scale, float rotation) {
-        this.position = position;
-//        this.origin = origin;
         this.scale = scale;
         this.rotation = rotation;
     }
-
-    public Vector2 position = new Vector2();
-//    public Vector2 origin = new Vector2();
-    public Vector2 scale = new Vector2(1, 1);
-    public float rotation = 0;
 
 }
