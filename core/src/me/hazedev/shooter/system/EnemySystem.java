@@ -101,7 +101,7 @@ public class EnemySystem extends IteratingSystem {
             if (particleEffectComponent == null) {
                 ParticleEffect effect = world.assets.getEnemyBlast();
                 TransformComponent transform = Mapper.TRANSFORM.get(entity);
-                Color color = Mapper.POLYGON_SPRITE.get(entity).sprite.getColor();
+                Color color = Mapper.SPRITE.get(entity).sprite.getColor();
                 effect.getEmitters().forEach(particleEmitter -> {
                     particleEmitter.getTint().setColors(new float[]{color.r, color.g, color.b});
                 });
@@ -109,7 +109,7 @@ public class EnemySystem extends IteratingSystem {
                 effect.scaleEffect(transform.scale.x, transform.scale.y, 1);
                 effect.start();
                 entity.add(new ParticleEffectComponent(effect));
-                entity.remove(PolygonSpriteComponent.class);
+                entity.remove(SpriteComponent.class);
             } else {
                 if (particleEffectComponent.effect.isComplete()) {
                     getEngine().removeEntity(entity);
@@ -122,14 +122,14 @@ public class EnemySystem extends IteratingSystem {
         Entity entity = world.createEntity();
 
         Polygon arrow = PolygonFactory.getArrow();
-        PolygonSprite sprite = new PolygonSprite(new PolygonRegion(new TextureRegion(world.assets.getBlankTexture()), arrow.getVertices(), new EarClippingTriangulator().computeTriangles(arrow.getVertices()).toArray()));
+        Sprite sprite = new Sprite(world.assets.getArrow());
         sprite.setColor(Color.SCARLET);
 
         entity.add(new EnemyComponent());
-        entity.add(new PolygonSpriteComponent(1, sprite));
-        entity.add(new TransformComponent(pos, new Vector2(sprite.getWidth()/2, sprite.getHeight()/2)));
-        entity.add(new MovementComponent());
-        entity.add(new BoundsComponent());
+        entity.add(new SpriteComponent(1, sprite));
+        entity.add(new TransformComponent(pos));
+        entity.add(new MovementComponent(128));
+        entity.add(new BoundsComponent(arrow));
         entity.add(new HealthComponent(1));
 
         world.addEntity(entity);
@@ -139,14 +139,14 @@ public class EnemySystem extends IteratingSystem {
         Entity entity = world.createEntity();
 
         Polygon arrow = PolygonFactory.getArrow();
-        PolygonSprite sprite = new PolygonSprite(new PolygonRegion(new TextureRegion(world.assets.getBlankTexture()), arrow.getVertices(), new EarClippingTriangulator().computeTriangles(arrow.getVertices()).toArray()));
+        Sprite sprite = new Sprite(world.assets.getArrow());
         sprite.setColor(new Color(0x0751FFFF));
 
         entity.add(new EnemyComponent());
-        entity.add(new PolygonSpriteComponent(1, sprite));
-        entity.add(new TransformComponent(pos, new Vector2(sprite.getWidth()/2, sprite.getHeight()/2), new Vector2(2, 2), 0));
-        entity.add(new MovementComponent());
-        entity.add(new BoundsComponent());
+        entity.add(new SpriteComponent(1, sprite));
+        entity.add(new TransformComponent(pos, new Vector2(2, 2), 0));
+        entity.add(new MovementComponent(92));
+        entity.add(new BoundsComponent(arrow));
         entity.add(new HealthComponent(3));
 
         world.addEntity(entity);

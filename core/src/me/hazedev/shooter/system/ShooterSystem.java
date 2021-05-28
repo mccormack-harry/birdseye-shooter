@@ -112,17 +112,16 @@ public class ShooterSystem extends IteratingSystem {
     public void spawnPlayer() {
         Entity entity = world.createEntity();
 
-        Polygon arrow = PolygonFactory.getArrow();
-        PolygonSprite sprite = new PolygonSprite(new PolygonRegion(new TextureRegion(world.assets.getBlankTexture()), arrow.getVertices(), new EarClippingTriangulator().computeTriangles(arrow.getVertices()).toArray()));
+        Sprite sprite = new Sprite(world.assets.getArrow());
         sprite.setColor(Color.GREEN);
 
         entity.add(new ShooterComponent());
-        entity.add(new PolygonSpriteComponent(2, sprite));
+        entity.add(new SpriteComponent(2, sprite));
         entity.add(new TransformComponent(new Vector2(world.size / 2f, world.size / 2f)));
         entity.add(new MovementComponent());
         entity.add(new InputComponent());
         entity.add(new CameraTargetComponent());
-        entity.add(new BoundsComponent());
+        entity.add(new BoundsComponent(PolygonFactory.getArrow()));
         entity.add(new HealthComponent(3));
 
         world.addEntity(entity);
@@ -140,7 +139,7 @@ public class ShooterSystem extends IteratingSystem {
         entity.add(new TransformComponent(shooterTransform.position.cpy(), new Vector2(sprite.getWidth()/2, sprite.getHeight()/2), new Vector2(3, 3), shooterTransform.rotation));
         entity.add(new MovementComponent(new Vector2(300, 0).rotateDeg(shooterTransform.rotation)));
         entity.add(new SpriteComponent(3, sprite));
-        entity.add(new BoundsComponent());
+        entity.add(new BoundsComponent(sprite.getWidth(), sprite.getHeight()));
         entity.add(new HealthComponent(shooter.penetration));
 
         world.addEntity(entity);

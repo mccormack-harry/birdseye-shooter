@@ -5,18 +5,15 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
-import com.badlogic.gdx.graphics.g2d.PolygonSprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.EarClippingTriangulator;
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import me.hazedev.shooter.Mapper;
+import me.hazedev.shooter.PolygonFactory;
 import me.hazedev.shooter.World;
 import me.hazedev.shooter.component.BoundsComponent;
 import me.hazedev.shooter.component.ObstacleComponent;
-import me.hazedev.shooter.component.PolygonSpriteComponent;
 import me.hazedev.shooter.component.ShooterComponent;
+import me.hazedev.shooter.component.SpriteComponent;
 import me.hazedev.shooter.component.TransformComponent;
 
 public class ObstacleSystem extends EntitySystem {
@@ -31,15 +28,14 @@ public class ObstacleSystem extends EntitySystem {
     public void spawnObstacle(Vector2 pos) {
         Entity entity = world.createEntity();
 
-        Polygon polygon = new Polygon(new float[]{6,0, 0,10, 6,20, 18,20, 24,10, 18,0});
 
-        PolygonSprite sprite = new PolygonSprite(new PolygonRegion(new TextureRegion(world.assets.getBlankTexture()), polygon.getVertices(), new EarClippingTriangulator().computeTriangles(polygon.getVertices()).toArray()));
+        Sprite sprite = new Sprite(world.assets.getOctagon());
         sprite.setColor(Color.PURPLE);
 
         entity.add(new ObstacleComponent());
-        entity.add(new PolygonSpriteComponent(1, sprite));
-        entity.add(new TransformComponent(pos, new Vector2(sprite.getWidth()/2, sprite.getHeight()/2)));
-        entity.add(new BoundsComponent());
+        entity.add(new SpriteComponent(0, sprite));
+        entity.add(new TransformComponent(pos));
+        entity.add(new BoundsComponent(PolygonFactory.getOctagon()));
 
         world.addEntity(entity);
     }
