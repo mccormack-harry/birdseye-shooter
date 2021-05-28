@@ -16,7 +16,6 @@ public class Assets implements Disposable, AssetProvider {
         public static final String ARROW = TEXTURE_DIR + "arrow.png";
         public static final String OCTAGON = TEXTURE_DIR + "octagon.png";
         public static final String BULLET = TEXTURE_DIR + "bullet.png";
-        public static final String BLANK = TEXTURE_DIR + "white.png";
         public static final String HEALTH = TEXTURE_DIR + "health.png";
         public static final String REGENERATION = TEXTURE_DIR + "regeneration.png";
 
@@ -39,7 +38,6 @@ public class Assets implements Disposable, AssetProvider {
         public static final AssetDescriptor<Texture> ARROW = new AssetDescriptor<>(Paths.ARROW, Texture.class);
         public static final AssetDescriptor<Texture> OCTAGON = new AssetDescriptor<>(Paths.OCTAGON, Texture.class);
         public static final AssetDescriptor<Texture> BULLET = new AssetDescriptor<>(Paths.BULLET, Texture.class);
-        public static final AssetDescriptor<Texture> BLANK = new AssetDescriptor<>(Paths.BLANK, Texture.class);
         public static final AssetDescriptor<Texture> HEALTH = new AssetDescriptor<>(Paths.HEALTH, Texture.class);
         public static final AssetDescriptor<Texture> REGENERATION = new AssetDescriptor<>(Paths.REGENERATION, Texture.class);
         public static final AssetDescriptor<ParticleEffect> ENEMY_BLAST = new AssetDescriptor<>(Paths.ENEMY_BLAST, ParticleEffect.class);
@@ -57,7 +55,6 @@ public class Assets implements Disposable, AssetProvider {
         manager.load(Descriptors.ARROW);
         manager.load(Descriptors.OCTAGON);
         manager.load(Descriptors.BULLET);
-        manager.load(Descriptors.BLANK);
         manager.load(Descriptors.HEALTH);
         manager.load(Descriptors.REGENERATION);
         manager.load(Descriptors.ENEMY_BLAST);
