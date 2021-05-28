@@ -28,6 +28,7 @@ public class World extends PooledEngine implements Disposable {
     public final Random random;
     public final OrthographicCamera camera;
     public final Viewport viewport;
+    public final Signaller signaller;
 
     public World(AssetProvider assets, int size) {
         this.assets = assets;
@@ -35,6 +36,7 @@ public class World extends PooledEngine implements Disposable {
         random = new Random();
         camera = new OrthographicCamera();
         viewport = new FitViewport(size, size, camera);
+        signaller = new Signaller();
 
         addSystem(new MovementSystem());
         addSystem(new SpriteSystem());
