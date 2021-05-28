@@ -2,6 +2,7 @@ package me.hazedev.shooter;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -18,6 +19,7 @@ import me.hazedev.shooter.system.ObstacleSystem;
 import me.hazedev.shooter.system.RenderingSystem;
 import me.hazedev.shooter.system.ShooterSystem;
 import me.hazedev.shooter.system.SpriteSystem;
+import me.hazedev.shooter.system.UpgradeSystem;
 
 import java.util.Random;
 
@@ -40,13 +42,14 @@ public class World extends PooledEngine implements Disposable {
 
         addSystem(new MovementSystem());
         addSystem(new SpriteSystem());
-        addSystem(new CameraSystem(camera));
+        addSystem(new CameraSystem(this));
         addSystem(new BoundsSystem());
-        addSystem(new CollisionSystem());
+        addSystem(new CollisionSystem(this));
         addSystem(new ShooterSystem(this));
         addSystem(new EnemySystem(this));
         addSystem(new BulletSystem(this));
         addSystem(new ObstacleSystem(this));
+        addSystem(new UpgradeSystem(this));
         addSystem(new BackgroundSystem(this));
         addSystem(new HealthSystem());
         addSystem(new RenderingSystem(camera));
