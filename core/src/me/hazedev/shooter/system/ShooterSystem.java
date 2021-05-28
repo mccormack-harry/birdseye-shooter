@@ -92,6 +92,7 @@ public class ShooterSystem extends IteratingSystem {
             entity.remove(MovementComponent.class);
             ParticleEffectComponent particleEffectComponent = Mapper.PARTICLE_EFFECT.get(entity);
             if (particleEffectComponent == null) {
+                world.assets.getGameOver().play();
                 ParticleEffect effect = world.assets.getShooterBlast();
                 Vector2 pos = Mapper.TRANSFORM.get(entity).position;
                 effect.setPosition(pos.x, pos.y);
@@ -158,6 +159,8 @@ public class ShooterSystem extends IteratingSystem {
         entity.add(new HealthComponent(shooter.penetration));
 
         world.addEntity(entity);
+
+        world.assets.getFire().play(0.5f);
     }
 
 }

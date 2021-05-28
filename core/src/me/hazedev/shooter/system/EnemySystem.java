@@ -126,7 +126,7 @@ public class EnemySystem extends IteratingSystem {
         }
     }
 
-    public static class EnemyCollisionListener extends CollisionListener {
+    public class EnemyCollisionListener extends CollisionListener {
 
         public EnemyCollisionListener() {
             super(Family.all(EnemyComponent.class).get(), Family.all(BulletComponent.class).get());
@@ -141,6 +141,7 @@ public class EnemySystem extends IteratingSystem {
                 EnemyComponent enemy = Mapper.ENEMY.get(enemyEntity);
                 BulletComponent bullet = Mapper.BULLET.get(bulletEntity);
                 if (enemy.gracePeriod <= 0) {
+                    world.assets.getHit().play();
                     bulletHealth.health -= 1;
                     enemyHealth.health -= bullet.damage;
                     enemy.gracePeriod = enemy.damageDelay;
