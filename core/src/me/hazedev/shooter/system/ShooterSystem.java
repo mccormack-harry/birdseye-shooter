@@ -99,7 +99,7 @@ public class ShooterSystem extends IteratingSystem {
                 Vector2 pos = Mapper.TRANSFORM.get(entity).position;
                 effect.setPosition(pos.x, pos.y);
                 effect.start();
-                entity.add(new ParticleEffectComponent(effect));
+                entity.add(new ParticleEffectComponent(0, effect));
             } else {
                 if (particleEffectComponent.effect.isComplete()) {
                     Gdx.app.exit();
