@@ -75,9 +75,16 @@ public class EnemySystem extends IteratingSystem {
     protected void processEntity(Entity entity, float delta) {
         HealthComponent health = Mapper.HEALTH.get(entity);
         if (health.health > 0) {
+            // Scale based on health
             TransformComponent transform = Mapper.TRANSFORM.get(entity);
-            Mapper.POLYGON_SPRITE.get(entity).sprite.getColor().a = health.health/health.maxHealth;
+            transform.scale.set(health.health, health.health);
+//            Mapper.SPRITE.get(entity).sprite.setAlpha(health.health/health.maxHealth);
 
+            // Grace period
+            EnemyComponent enemy = Mapper.ENEMY.get(entity);
+            if (enemy.gracePeriod > 0) enemy.gracePeriod -= delta;
+
+            // Movement
             ImmutableArray<Entity> shooters = getEngine().getEntitiesFor(Family.all(ShooterComponent.class, TransformComponent.class).get());
             Entity closestShooter = null;
             float closestDistance = -1f;
@@ -92,13 +99,14 @@ public class EnemySystem extends IteratingSystem {
 
             if (closestShooter != null) {
                 MovementComponent movement = Mapper.MOVEMENT.get(entity);
-                movement.acceleration.add(Mapper.TRANSFORM.get(closestShooter).position.cpy().sub(transform.position)).clamp(0, 256);
-                movement.maxVelocity = 128;
+                movement.acceleration.add(Mapper.TRANSFORM.get(closestShooter).position.cpy().sub(transform.position)).clamp(0, movement.maxVelocity * 3);
                 transform.rotation = MathUtils.radDeg * MathUtils.atan2(movement.velocity.y, movement.velocity.x);
             }
+
         } else { // DEAD
             ParticleEffectComponent particleEffectComponent = Mapper.PARTICLE_EFFECT.get(entity);
             if (particleEffectComponent == null) {
+                world.signaller.enemyDeathSignal.dispatch(entity);
                 ParticleEffect effect = world.assets.getEnemyBlast();
                 TransformComponent transform = Mapper.TRANSFORM.get(entity);
                 Color color = Mapper.SPRITE.get(entity).sprite.getColor();
