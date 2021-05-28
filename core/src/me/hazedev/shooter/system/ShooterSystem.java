@@ -51,7 +51,7 @@ public class ShooterSystem extends IteratingSystem {
         HealthComponent health = Mapper.HEALTH.get(entity);
         if (health.health > 0) {
 
-            shooter.cooldown -= delta;
+            shooter.fireCooldown -= delta;
             TransformComponent transform = Mapper.TRANSFORM.get(entity);
             MovementComponent movement = Mapper.MOVEMENT.get(entity);
 
@@ -61,9 +61,9 @@ public class ShooterSystem extends IteratingSystem {
                 transform.rotation = MathUtils.radDeg * MathUtils.atan2(mousePos.y - transform.position.y, mousePos.x - transform.position.x);
 
                 if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-                    if (shooter.cooldown <= 0) {
+                    if (shooter.fireCooldown <= 0) {
                         spawnBullet(entity);
-                        shooter.cooldown = 1f / shooter.fireRate;
+                        shooter.fireCooldown = 1f / shooter.fireRate;
                     }
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -86,7 +86,7 @@ public class ShooterSystem extends IteratingSystem {
                 movement.maxVelocity = 90;
             }
         } else { // DEAD
-            entity.remove(PolygonSpriteComponent.class);
+            entity.remove(SpriteComponent.class);
             entity.remove(InputComponent.class);
             entity.remove(CameraTargetComponent.class);
             entity.remove(MovementComponent.class);
