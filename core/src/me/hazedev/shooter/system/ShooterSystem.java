@@ -151,8 +151,11 @@ public class ShooterSystem extends IteratingSystem {
         TransformComponent shooterTransform = Mapper.TRANSFORM.get(shooterEntity);
         ShooterComponent shooter = Mapper.SHOOTER.get(shooterEntity);
 
-        entity.add(new BulletComponent(shooterEntity));
-        entity.add(new TransformComponent(shooterTransform.position.cpy(), new Vector2(sprite.getWidth()/2, sprite.getHeight()/2), new Vector2(3, 3), shooterTransform.rotation));
+        BulletComponent bullet = new BulletComponent(shooterEntity);
+        bullet.damage = shooter.damage;
+
+        entity.add(bullet);
+        entity.add(new TransformComponent(shooterTransform.position.cpy(), new Vector2(shooter.damage, shooter.damage), shooterTransform.rotation));
         entity.add(new MovementComponent(new Vector2(300, 0).rotateDeg(shooterTransform.rotation)));
         entity.add(new SpriteComponent(3, sprite));
         entity.add(new BoundsComponent(sprite.getWidth(), sprite.getHeight()));
