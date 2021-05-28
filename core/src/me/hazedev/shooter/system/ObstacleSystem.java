@@ -11,10 +11,12 @@ import me.hazedev.shooter.Mapper;
 import me.hazedev.shooter.PolygonFactory;
 import me.hazedev.shooter.World;
 import me.hazedev.shooter.component.BoundsComponent;
+import me.hazedev.shooter.component.HealthComponent;
 import me.hazedev.shooter.component.ObstacleComponent;
 import me.hazedev.shooter.component.ShooterComponent;
 import me.hazedev.shooter.component.SpriteComponent;
 import me.hazedev.shooter.component.TransformComponent;
+import me.hazedev.shooter.event.listener.CollisionListener;
 
 public class ObstacleSystem extends EntitySystem {
 
@@ -23,6 +25,7 @@ public class ObstacleSystem extends EntitySystem {
 
     public ObstacleSystem(World world) {
         this.world = world;
+        world.signaller.collisionSignal.add(new ObstacleCollisionListener());
     }
 
     public void spawnObstacle(Vector2 pos) {
@@ -51,4 +54,18 @@ public class ObstacleSystem extends EntitySystem {
             }
         }
     }
+
+    private static class ObstacleCollisionListener extends CollisionListener {
+
+        public ObstacleCollisionListener() {
+            super(Family.all(ObstacleComponent.class).get(), Family.all(HealthComponent.class).get());
+        }
+
+        @Override
+        public void onCollide(Entity obstacleEntity, Entity entity) {
+            Mapper.HEALTH.get(entity).health = 0;
+        }
+
+    }
+
 }

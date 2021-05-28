@@ -5,86 +5,35 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.utils.Array;
 import me.hazedev.shooter.Mapper;
+import me.hazedev.shooter.World;
 import me.hazedev.shooter.component.BoundsComponent;
-import me.hazedev.shooter.component.BulletComponent;
-import me.hazedev.shooter.component.EnemyComponent;
-import me.hazedev.shooter.component.HealthComponent;
-import me.hazedev.shooter.component.ObstacleComponent;
-import me.hazedev.shooter.component.ShooterComponent;
+import me.hazedev.shooter.event.CollisionEvent;
 
 public class CollisionSystem extends EntitySystem {
 
+    private final World world;
+    public Family boundsFamily = Family.all(BoundsComponent.class).get();
+
+    public CollisionSystem(World world) {
+        this.world = world;
+    }
+
     @Override
-    public void update(float deltaTime) {
-        ImmutableArray<Entity> enemies = getEngine().getEntitiesFor(Family.all(EnemyComponent.class, BoundsComponent.class, HealthComponent.class).get());
-        ImmutableArray<Entity> bullets = getEngine().getEntitiesFor(Family.all(BulletComponent.class, BoundsComponent.class, HealthComponent.class).get());
-        ImmutableArray<Entity> shooters = getEngine().getEntitiesFor(Family.all(ShooterComponent.class, BoundsComponent.class, HealthComponent.class).get());
-        ImmutableArray<Entity> obstacles = getEngine().getEntitiesFor(Family.all(ObstacleComponent.class, BoundsComponent.class).get());
-
-        for (Entity enemyEntity: enemies) {
-            BoundsComponent enemyBounds = Mapper.BOUNDS.get(enemyEntity);
-            HealthComponent enemyHealth = Mapper.HEALTH.get(enemyEntity);
-
-            if (enemyHealth.health > 0) {
-
-                for (Entity bulletEntity : bullets) {
-                    BoundsComponent bulletBounds = Mapper.BOUNDS.get(bulletEntity);
-                    HealthComponent bulletHealth = Mapper.HEALTH.get(bulletEntity);
-
-                    if (bulletHealth.health <= 0) continue;
-
-                    if (Intersector.overlapConvexPolygons(enemyBounds.bounds, bulletBounds.bounds)) {
-                        enemyHealth.health -= 1;
-                        bulletHealth.health -= 1;
-                    }
-
-                }
-
-            }
-
-            if (enemyHealth.health > 0) {
-                for (Entity shooterEntity: shooters) {
-                    BoundsComponent shooterBounds = Mapper.BOUNDS.get(shooterEntity);
-                    HealthComponent shooterHealth = Mapper.HEALTH.get(shooterEntity);
-
-                    if (shooterHealth.health <= 0) continue;
-
-                    if (Intersector.overlapConvexPolygons(enemyBounds.bounds, shooterBounds.bounds)) {
-                        shooterHealth.health -= 1;
-                        enemyHealth.health = 0;
-                    }
-
+    public void update(float delta) {
+        ImmutableArray<Entity> entities = getEngine().getEntitiesFor(boundsFamily);
+        Array<Entity> others = new Array<>(entities.toArray(Entity.class));
+        for (Entity entity: entities) {
+            others.removeIndex(0);
+            for (Entity other: others) {
+                BoundsComponent bounds = Mapper.BOUNDS.get(entity);
+                BoundsComponent otherBounds = Mapper.BOUNDS.get(other);
+                if (Intersector.overlapConvexPolygons(bounds.bounds, otherBounds.bounds)) {
+                    world.signaller.collisionSignal.dispatch(new CollisionEvent(entity, other));
                 }
             }
-
-            if (enemyHealth.health > 0) {
-                for (Entity obstacleEntity: obstacles) {
-                    BoundsComponent obstacleBounds = Mapper.BOUNDS.get(obstacleEntity);
-
-                    if (Intersector.overlapConvexPolygons(enemyBounds.bounds, obstacleBounds.bounds)) {
-                        enemyHealth.health = 0;
-                    }
-                }
-            }
-
         }
-
-        for (Entity shooterEntity: shooters) {
-            BoundsComponent shooterBounds = Mapper.BOUNDS.get(shooterEntity);
-            HealthComponent shooterHealth = Mapper.HEALTH.get(shooterEntity);
-
-            if (shooterHealth.health > 0) {
-                for (Entity obstacleEntity: obstacles) {
-                    BoundsComponent obstacleBounds = Mapper.BOUNDS.get(obstacleEntity);
-                    if (Intersector.overlapConvexPolygons(shooterBounds.bounds, obstacleBounds.bounds)) {
-                        shooterHealth.health = 0;
-                    }
-                }
-            }
-
-        }
-
     }
 
 }

@@ -32,6 +32,7 @@ public class BulletSystem extends IteratingSystem {
         if (health.health <= 0) {
             world.removeEntity(entity);
         }
+        Mapper.SHOOTER.get(bullet.shooter).kills += bullet.kills;
 
     }
 

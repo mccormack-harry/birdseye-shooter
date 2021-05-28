@@ -7,13 +7,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
-import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import me.hazedev.shooter.Mapper;
@@ -22,14 +17,15 @@ import me.hazedev.shooter.World;
 import me.hazedev.shooter.component.BoundsComponent;
 import me.hazedev.shooter.component.BulletComponent;
 import me.hazedev.shooter.component.CameraTargetComponent;
+import me.hazedev.shooter.component.EnemyComponent;
 import me.hazedev.shooter.component.HealthComponent;
 import me.hazedev.shooter.component.InputComponent;
 import me.hazedev.shooter.component.MovementComponent;
 import me.hazedev.shooter.component.ParticleEffectComponent;
-import me.hazedev.shooter.component.PolygonSpriteComponent;
 import me.hazedev.shooter.component.ShooterComponent;
 import me.hazedev.shooter.component.SpriteComponent;
 import me.hazedev.shooter.component.TransformComponent;
+import me.hazedev.shooter.event.listener.CollisionListener;
 
 public class ShooterSystem extends IteratingSystem {
 
@@ -38,6 +34,7 @@ public class ShooterSystem extends IteratingSystem {
     public ShooterSystem(World world) {
         super(Family.all(ShooterComponent.class).get());
         this.world = world;
+        world.signaller.collisionSignal.add(new ShooterCollisionListener());
     }
 
     @Override
@@ -104,6 +101,24 @@ public class ShooterSystem extends IteratingSystem {
                 if (particleEffectComponent.effect.isComplete()) {
                     Gdx.app.exit();
                 }
+            }
+        }
+
+    }
+
+    private static class ShooterCollisionListener extends CollisionListener {
+
+        public ShooterCollisionListener() {
+            super(Family.all(ShooterComponent.class).get(), Family.all(EnemyComponent.class).get());
+        }
+
+        @Override
+        public void onCollide(Entity shooterEntity, Entity enemyEntity) {
+            HealthComponent enemyHealth = Mapper.HEALTH.get(enemyEntity);
+            HealthComponent shooterHealth = Mapper.HEALTH.get(shooterEntity);
+            if (enemyHealth.health > 0 && shooterHealth.health > 0) {
+                shooterHealth.health -= 1;
+                enemyHealth.health = 0;
             }
         }
 
