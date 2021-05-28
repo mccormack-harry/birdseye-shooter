@@ -11,6 +11,6 @@ public final class BulletComponent implements Component {
 
     public Entity shooter;
     public int kills;
-    public int damage;
+    public int damage = 1;
 
 }
