@@ -46,7 +46,7 @@ public class BackgroundSystem extends IteratingSystem {
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         Sprite sprite = new Sprite(texture, world.size + texture.getWidth() * 2, world.size + texture.getHeight() * 2);
 
-        entity.add(new TransformComponent(new Vector2(), new Vector2(sprite.getWidth()/2, sprite.getHeight()/2)));
+        entity.add(new TransformComponent(new Vector2()));
         entity.add(new SpriteComponent(-1, sprite));
         entity.add(new BackgroundComponent());
 
