@@ -18,7 +18,7 @@ apply plugin: 'kotlin'
 allprojects {
     apply plugin: "eclipse"
 
-    version = '1.0'
+    version = '0.1'
     ext {
         appName = "birdseye-shooter"
         gdxVersion = '1.9.14'
