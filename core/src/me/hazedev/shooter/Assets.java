@@ -5,7 +5,11 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.utils.Disposable;
 
 public class Assets implements Disposable, AssetProvider {
@@ -31,6 +35,9 @@ public class Assets implements Disposable, AssetProvider {
         public static final String HIT = SFX_DIR + "hit.mp3";
         public static final String GAME_OVER = SFX_DIR + "game-over.mp3";
 
+        public static final String FONT_DIR = "font/";
+        public static final String FONT = FONT_DIR + "PressStart2P.ttf";
+
     }
 
     public static class Descriptors {
@@ -46,23 +53,42 @@ public class Assets implements Disposable, AssetProvider {
         public static final AssetDescriptor<Sound> FIRE = new AssetDescriptor<>(Paths.FIRE, Sound.class);
         public static final AssetDescriptor<Sound> HIT = new AssetDescriptor<>(Paths.HIT, Sound.class);
         public static final AssetDescriptor<Sound> GAME_OVER = new AssetDescriptor<>(Paths.GAME_OVER, Sound.class);
+        public static final AssetDescriptor<BitmapFont> FONT;
+
+        static {
+            FreetypeFontLoader.FreeTypeFontLoaderParameter fontParameter = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+            fontParameter.fontFileName = Paths.FONT;
+            fontParameter.fontParameters.size = 16;
+            FONT = new AssetDescriptor<>(Paths.FONT, BitmapFont.class, fontParameter);
+        }
+
     }
 
     public final AssetManager manager = new AssetManager();
 
     public void loadAll() {
+
+        // Textures
         manager.load(Descriptors.BACKGROUND_TILE);
         manager.load(Descriptors.ARROW);
         manager.load(Descriptors.OCTAGON);
         manager.load(Descriptors.BULLET);
         manager.load(Descriptors.HEALTH);
         manager.load(Descriptors.REGENERATION);
+        // Particles
         manager.load(Descriptors.ENEMY_BLAST);
         manager.load(Descriptors.SHOOTER_BLAST);
+        // Music
         manager.load(Descriptors.MUSIC);
+        // Sounds
         manager.load(Descriptors.FIRE);
         manager.load(Descriptors.HIT);
         manager.load(Descriptors.GAME_OVER);
+        // Fonts
+        manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(manager.getFileHandleResolver()));
+        manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(manager.getFileHandleResolver()));
+        manager.load(Descriptors.FONT);
+        // Finish
         manager.finishLoading();
     }
 
@@ -124,6 +150,11 @@ public class Assets implements Disposable, AssetProvider {
     @Override
     public Texture getRegenerationUpgrade() {
         return manager.get(Descriptors.REGENERATION);
+    }
+
+    @Override
+    public BitmapFont getFont() {
+        return manager.get(Descriptors.FONT);
     }
 
     @Override

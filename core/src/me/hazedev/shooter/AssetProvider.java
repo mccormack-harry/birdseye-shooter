@@ -3,6 +3,7 @@ package me.hazedev.shooter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 
 public interface AssetProvider {
@@ -30,5 +31,7 @@ public interface AssetProvider {
     Texture getHealthUpgrade();
 
     Texture getRegenerationUpgrade();
+
+    BitmapFont getFont();
 
 }

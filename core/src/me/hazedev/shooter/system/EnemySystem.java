@@ -28,7 +28,7 @@ public class EnemySystem extends IteratingSystem {
 
     private float timer = 0;
     private int hordeSize = 5;
-    private float spawnDelay = 0.3f;
+    private float spawnDelay = 0.2f;
     private float spawnCooldown = 0;
     
     public final World world;
@@ -57,11 +57,15 @@ public class EnemySystem extends IteratingSystem {
         for (Entity shooter : shooters) {
             TransformComponent shooterTransform = Mapper.TRANSFORM.get(shooter);
             if (getEntities().size() < hordeSize && spawnCooldown == 0) {
-                Vector2 offset = new Vector2((world.random.nextFloat() * 0.6f + 0.4f) * world.size / 2f, (world.random.nextFloat() * 0.6f + 0.4f) * world.size / 2f).scl(world.random.nextBoolean() ? 1 : -1, world.random.nextBoolean() ? 1 : -1);
-                if (world.random.nextFloat() > 0.25) {
-                    spawnEnemy(offset.add(shooterTransform.position));
+                Vector2 offset = new Vector2((world.random.nextFloat() * 0.6f + 0.4f) * world.viewport.getWorldWidth() / 2f, (world.random.nextFloat() * 0.6f + 0.4f) * world.viewport.getWorldHeight() / 2f).scl(world.random.nextBoolean() ? 1 : -1, world.random.nextBoolean() ? 1 : -1);
+                Vector2 position = offset.add(shooterTransform.position);
+                float random = world.random.nextFloat();
+                if (random > 0.25f) {
+                    spawnEnemy(position);
+                } else if (random > 0.1f) {
+                    spawnBlueEnemy(position);
                 } else {
-                    spawnBlueEnemy(offset.add(shooterTransform.position));
+                    spawnPurpleEnemy(position);
                 }
                 spawnCooldown = spawnDelay;
             }
@@ -99,7 +103,7 @@ public class EnemySystem extends IteratingSystem {
 
             if (closestShooter != null) {
                 MovementComponent movement = Mapper.MOVEMENT.get(entity);
-                movement.acceleration.add(Mapper.TRANSFORM.get(closestShooter).position.cpy().sub(transform.position)).clamp(0, movement.maxVelocity * 3);
+                movement.acceleration.add(Mapper.TRANSFORM.get(closestShooter).position.cpy().sub(transform.position)).clamp(0, movement.maxVelocity * 5);
                 transform.rotation = MathUtils.radDeg * MathUtils.atan2(movement.velocity.y, movement.velocity.x);
             }
 
@@ -181,10 +185,27 @@ public class EnemySystem extends IteratingSystem {
 
         entity.add(new EnemyComponent());
         entity.add(new SpriteComponent(1, sprite));
-        entity.add(new TransformComponent(pos, new Vector2(2, 2), 0));
+        entity.add(new TransformComponent(pos));
         entity.add(new MovementComponent(92));
         entity.add(new BoundsComponent(arrow));
         entity.add(new HealthComponent(3));
+
+        world.addEntity(entity);
+    }
+
+    public void spawnPurpleEnemy(Vector2 pos) {
+        Entity entity = world.createEntity();
+
+        Polygon arrow = PolygonFactory.getArrow();
+        Sprite sprite = new Sprite(world.assets.getArrow());
+        sprite.setColor(Color.PURPLE);
+
+        entity.add(new EnemyComponent());
+        entity.add(new SpriteComponent(1, sprite));
+        entity.add(new TransformComponent(pos));
+        entity.add(new MovementComponent(256));
+        entity.add(new BoundsComponent(arrow));
+        entity.add(new HealthComponent(1));
 
         world.addEntity(entity);
     }

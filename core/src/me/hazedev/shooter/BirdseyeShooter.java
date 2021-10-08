@@ -7,6 +7,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
+import me.hazedev.shooter.event.WindowResizeEvent;
 
 public class BirdseyeShooter implements ApplicationListener {
 
@@ -15,7 +16,7 @@ public class BirdseyeShooter implements ApplicationListener {
 
 	@Override
 	public void create() {
-		setFullscreen(true);
+//		setFullscreen(true);
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean keyDown(int keycode) {
@@ -34,12 +35,12 @@ public class BirdseyeShooter implements ApplicationListener {
 		assets = new Assets();
 		assets.loadAll();
 
-		world = new World(assets, 512 + 128);
+		world = new World(assets, 2048);
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		world.viewport.update(width, height);
+		world.signaller.windowResizeSignal.dispatch(new WindowResizeEvent(width, height));
 	}
 
 	@Override

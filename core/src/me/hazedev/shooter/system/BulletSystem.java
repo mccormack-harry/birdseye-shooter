@@ -16,23 +16,29 @@ public class BulletSystem extends IteratingSystem {
     public BulletSystem(World world) {
         super(Family.all(BulletComponent.class, TransformComponent.class).get());
         this.world = world;
+
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
 
-        TransformComponent transform = Mapper.TRANSFORM.get(entity);
         BulletComponent bullet = Mapper.BULLET.get(entity);
-        TransformComponent shooterTransform = Mapper.TRANSFORM.get(bullet.shooter);
-        if (shooterTransform.position.dst(transform.position) > world.size) {
-            world.removeEntity(entity);
-        }
 
         HealthComponent health = Mapper.HEALTH.get(entity);
-        if (health.health <= 0) {
+        boolean dead = health.health <= 0;
+
+        if (!dead) {
+            TransformComponent transform = Mapper.TRANSFORM.get(entity);
+            TransformComponent shooterTransform = Mapper.TRANSFORM.get(bullet.shooter);
+            if (shooterTransform.position.dst(transform.position) > Math.max(world.viewport.getWorldWidth(), world.viewport.getWorldHeight())) {
+                dead = true;
+            }
+        }
+
+        if (dead) {
+            Mapper.SHOOTER.get(bullet.shooter).kills += bullet.kills;
             world.removeEntity(entity);
         }
-        Mapper.SHOOTER.get(bullet.shooter).kills += bullet.kills;
 
     }
 

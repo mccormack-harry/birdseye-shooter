@@ -30,19 +30,18 @@ import me.hazedev.shooter.event.listener.CollisionListener;
 public class ShooterSystem extends IteratingSystem {
 
     public final World world;
+    public final Entity player;
 
     public ShooterSystem(World world) {
         super(Family.all(ShooterComponent.class).get());
         this.world = world;
         world.signaller.collisionSignal.add(new ShooterCollisionListener());
+        this.player = spawnPlayer();
     }
 
     @Override
     public void update(float delta) {
         super.update(delta);
-        if (getEntities().size() == 0) {
-            spawnPlayer();
-        }
     }
 
     @Override
@@ -54,6 +53,9 @@ public class ShooterSystem extends IteratingSystem {
             shooter.fireCooldown -= delta;
             TransformComponent transform = Mapper.TRANSFORM.get(entity);
             MovementComponent movement = Mapper.MOVEMENT.get(entity);
+
+            float scale = 1 + Math.max(0, health.health - 3);
+            transform.scale.set(scale, scale);
 
             if (Mapper.INPUT.has(entity)) {
                 // https://stackoverflow.com/questions/20315566/libgdx-vector2-shooting-ball-at-an-angle
@@ -83,7 +85,7 @@ public class ShooterSystem extends IteratingSystem {
                     movement.velocity.x *= 1 - delta;
                 }
                 movement.acceleration.scl(256).clamp(0, 256);
-                movement.maxVelocity = 90;
+                movement.maxVelocity = 150;
             }
         } else { // DEAD
             entity.remove(SpriteComponent.class);
@@ -125,7 +127,7 @@ public class ShooterSystem extends IteratingSystem {
 
     }
 
-    public void spawnPlayer() {
+    private Entity spawnPlayer() {
         Entity entity = world.createEntity();
 
         Sprite sprite = new Sprite(world.assets.getArrow());
@@ -141,6 +143,7 @@ public class ShooterSystem extends IteratingSystem {
         entity.add(new HealthComponent(3));
 
         world.addEntity(entity);
+        return entity;
     }
 
     public void spawnBullet(Entity shooterEntity) {

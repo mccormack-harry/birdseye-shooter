@@ -5,10 +5,12 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.signals.Listener;
 import com.badlogic.ashley.signals.Signal;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import me.hazedev.shooter.Mapper;
+import me.hazedev.shooter.UpgradeType;
 import me.hazedev.shooter.World;
 import me.hazedev.shooter.component.BoundsComponent;
 import me.hazedev.shooter.component.ShooterComponent;
@@ -43,28 +45,28 @@ public class UpgradeSystem extends IteratingSystem {
     public void spawnUpgrade(Vector2 pos) {
         Entity entity = world.createEntity();
 
-        UpgradeComponent.UpgradeType[] upgradeTypes = UpgradeComponent.UpgradeType.values();
-        UpgradeComponent.UpgradeType upgradeType = upgradeTypes[world.random.nextInt(upgradeTypes.length)];
+        UpgradeType[] upgradeTypes = UpgradeType.values();
+        UpgradeType upgradeType = upgradeTypes[world.random.nextInt(upgradeTypes.length)];
 
-        Texture texture;
+        Texture texture = world.assets.getOctagon();
 
-        switch (upgradeType) {
-            case HEALTH:
-                texture = world.assets.getHealthUpgrade();
-                break;
-            case REGENERATION:
-                texture = world.assets.getRegenerationUpgrade();
-                break;
-            default:
-                texture = world.assets.getOctagon();
-                break;
-        }
+//        switch (upgradeType) {
+//            case HEALTH:
+//                texture = world.assets.getHealthUpgrade();
+//                break;
+//            case REGENERATION:
+//                texture = world.assets.getRegenerationUpgrade();
+//                break;
+//            default:
+//                texture = world.assets.getOctagon();
+//                break;
+//        }
 
         Sprite sprite = new Sprite(texture);
-//        sprite.setColor(Color.CYAN);
+        sprite.setColor(Color.CYAN);
 
         entity.add(new UpgradeComponent(upgradeType, 1));
-        entity.add(new TransformComponent(pos));
+        entity.add(new TransformComponent(pos, new Vector2(0.5f, 0.5f), 45 * world.random.nextFloat()));
         entity.add(new SpriteComponent(2, sprite));
         entity.add(new BoundsComponent(sprite.getWidth(), sprite.getHeight()));
 
@@ -94,6 +96,9 @@ public class UpgradeSystem extends IteratingSystem {
                 case FIRE_RATE:
                     shooter.fireRate += upgrade.amount;
                     break;
+                case SPEED:
+                    Optional.ofNullable(Mapper.MOVEMENT.get(shooterEntity)).ifPresent(movement -> movement.maxVelocity += 16);
+                    break;
                 case PENETRATION:
                     shooter.penetration += upgrade.amount;
                     break;
@@ -110,7 +115,7 @@ public class UpgradeSystem extends IteratingSystem {
             TransformComponent transform = Mapper.TRANSFORM.get(enemy);
             if (transform != null) {
                 if (world.random.nextFloat() < 0.05f) {
-                    spawnUpgrade(transform.position);
+                    spawnUpgrade(transform.position.cpy());
                 }
             }
         }

@@ -19,4 +19,5 @@ public class BoundsComponent implements Component {
                 width, 0};
         this.bounds = new Polygon(vertices);
     }
+
 }

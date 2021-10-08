@@ -38,7 +38,8 @@ public class PolygonFactory {
                 0, 11,
                 0, 16,
                 3, 16,
-                16, 8,
+                16, 9,
+                16, 7,
                 3, 0
         });
     }

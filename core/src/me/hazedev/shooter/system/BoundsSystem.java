@@ -3,10 +3,8 @@ package me.hazedev.shooter.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import me.hazedev.shooter.Mapper;
-import me.hazedev.shooter.World;
 import me.hazedev.shooter.component.BoundsComponent;
 import me.hazedev.shooter.component.SpriteComponent;
 
@@ -21,15 +19,16 @@ public class BoundsSystem extends IteratingSystem {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-        shapeRenderer.setProjectionMatrix(((World) getEngine()).camera.combined);
-        shapeRenderer.setAutoShapeType(true);
-        shapeRenderer.begin();
-        shapeRenderer.setColor(Color.RED);
-        for (Entity entity: getEntities()) {
-            BoundsComponent boundsComponent = Mapper.BOUNDS.get(entity);
-            shapeRenderer.polygon(boundsComponent.bounds.getTransformedVertices());
-        }
-        shapeRenderer.end();
+// Render bounding boxes:
+//        shapeRenderer.setProjectionMatrix(((World) getEngine()).camera.combined);
+//        shapeRenderer.setAutoShapeType(true);
+//        shapeRenderer.begin();
+//        shapeRenderer.setColor(Color.RED);
+//        for (Entity entity: getEntities()) {
+//            BoundsComponent boundsComponent = Mapper.BOUNDS.get(entity);
+//            shapeRenderer.polygon(boundsComponent.bounds.getTransformedVertices());
+//        }
+//        shapeRenderer.end();
     }
 
     @Override

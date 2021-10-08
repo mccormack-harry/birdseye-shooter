@@ -49,7 +49,7 @@ public class ObstacleSystem extends EntitySystem {
         for (Entity shooter : shooters) {
             TransformComponent shooterTransform = Mapper.TRANSFORM.get(shooter);
             if (getEngine().getEntitiesFor(family).size() < 5) {
-                Vector2 offset = new Vector2((world.random.nextFloat() * 0.6f + 0.4f) * world.size / 2f, (world.random.nextFloat() * 0.6f + 0.4f) * world.size / 2f).scl(world.random.nextBoolean() ? 1 : -1, world.random.nextBoolean() ? 1 : -1);
+                Vector2 offset = new Vector2((world.random.nextFloat() * 0.6f + 0.4f) * world.viewport.getWorldWidth() / 2f, (world.random.nextFloat() * 0.6f + 0.4f) * world.viewport.getWorldHeight() / 2f).scl(world.random.nextBoolean() ? 1 : -1, world.random.nextBoolean() ? 1 : -1);
                 spawnObstacle(offset.add(shooterTransform.position));
             }
         }

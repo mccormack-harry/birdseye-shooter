@@ -35,7 +35,9 @@ public class BackgroundSystem extends IteratingSystem {
         int tileWidth = sprite.sprite.getTexture().getWidth();
         int tileHeight = sprite.sprite.getTexture().getHeight();
         TransformComponent transform = Mapper.TRANSFORM.get(entity);
-        transform.position.set((int) (world.camera.position.x/tileWidth) * tileWidth, (int) (world.camera.position.y/tileHeight) * tileHeight);
+        transform.position.set(
+                Math.max(0, Math.min(world.size, (int) (world.camera.position.x/tileWidth) * tileWidth)),
+                Math.max(0, Math.min(world.size, (int) (world.camera.position.y/tileHeight) * tileHeight)));
     }
 
     public void createBackground() {

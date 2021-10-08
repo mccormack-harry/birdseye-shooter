@@ -5,12 +5,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import me.hazedev.shooter.Mapper;
+import me.hazedev.shooter.World;
 import me.hazedev.shooter.component.ParticleEffectComponent;
 import me.hazedev.shooter.component.SpriteComponent;
 
@@ -18,16 +18,17 @@ import java.util.Comparator;
 
 public class RenderingSystem extends EntitySystem implements Disposable {
 
-    public final SpriteBatch batch;
-    public final OrthographicCamera camera;
+    private final World world;
+
+    private final SpriteBatch batch;
 
     private final Comparator<Component> layerComparator;
     private final ObjectIntMap<Component> componentLayerMap = new ObjectIntMap<>();
 
-    public RenderingSystem(OrthographicCamera camera) {
-        this.batch = new SpriteBatch();
-        this.camera = camera;
+    public RenderingSystem(World world) {
         layerComparator = (c1, c2) -> (int) Math.signum(componentLayerMap.get(c1, 0) - componentLayerMap.get(c2, 0));
+        this.world = world;
+        this.batch = new SpriteBatch();
     }
 
     @Override
@@ -49,8 +50,8 @@ public class RenderingSystem extends EntitySystem implements Disposable {
         renderQueue.sort(layerComparator);
         componentLayerMap.clear();
 
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
+        world.viewport.apply();
+        batch.setProjectionMatrix(world.camera.combined);
         batch.begin();
         for (Component renderable: renderQueue) {
             if (renderable instanceof SpriteComponent) {
@@ -66,5 +67,4 @@ public class RenderingSystem extends EntitySystem implements Disposable {
     public void dispose() {
         batch.dispose();
     }
-
 }
